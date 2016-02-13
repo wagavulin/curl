@@ -1136,6 +1136,10 @@ struct Progress {
   double t_appconnect;
   double t_pretransfer;
   double t_starttransfer;
+  double t_startupload;
+  double t_finishupload;
+  double t_startdownload;
+  double t_finishdownload;
   double t_redirect;
 
   struct timeval start;

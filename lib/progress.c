@@ -156,6 +156,10 @@ void Curl_pgrsResetTimesSizes(struct SessionHandle *data)
   data->progress.t_connect = 0.0;
   data->progress.t_pretransfer = 0.0;
   data->progress.t_starttransfer = 0.0;
+  data->progress.t_startupload = 0.0;
+  data->progress.t_finishupload = 0.0;
+  data->progress.t_startdownload = 0.0;
+  data->progress.t_finishdownload = 0.0;
 
   Curl_pgrsSetDownloadSize(data, -1);
   Curl_pgrsSetUploadSize(data, -1);
@@ -206,6 +210,22 @@ void Curl_pgrsTime(struct SessionHandle *data, timerid timer)
   case TIMER_POSTRANSFER:
     /* this is the normal end-of-transfer thing */
     break;
+  case TIMER_STARTUPLOAD:
+    data->progress.t_startupload =
+      Curl_tvdiff_secs(now, data->progress.t_startsingle);
+    break;
+  case TIMER_FINISHUPLOAD:
+    data->progress.t_finishupload =
+      Curl_tvdiff_secs(now, data->progress.t_startsingle);
+    break;
+  case TIMER_STARTDOWNLOAD:
+    data->progress.t_startdownload =
+      Curl_tvdiff_secs(now, data->progress.t_startsingle);
+    break;
+  case TIMER_FINISHDOWNLOAD:
+    data->progress.t_finishdownload =
+      Curl_tvdiff_secs(now, data->progress.t_startsingle);
+    break;
   case TIMER_REDIRECT:
     data->progress.t_redirect = Curl_tvdiff_secs(now, data->progress.start);
     break;
@@ -222,11 +242,17 @@ void Curl_pgrsStartNow(struct SessionHandle *data)
 
 void Curl_pgrsSetDownloadCounter(struct SessionHandle *data, curl_off_t size)
 {
+  if (data->progress.downloaded == 0)
+    Curl_pgrsTime(data, TIMER_STARTDOWNLOAD);
+  Curl_pgrsTime(data, TIMER_FINISHDOWNLOAD);
   data->progress.downloaded = size;
 }
 
 void Curl_pgrsSetUploadCounter(struct SessionHandle *data, curl_off_t size)
 {
+  if (data->progress.uploaded == 0)
+    Curl_pgrsTime(data, TIMER_STARTUPLOAD);
+  Curl_pgrsTime(data, TIMER_FINISHUPLOAD);
   data->progress.uploaded = size;
 }
 

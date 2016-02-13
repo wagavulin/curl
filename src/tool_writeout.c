@@ -36,6 +36,10 @@ typedef enum {
   VAR_APPCONNECT_TIME,
   VAR_PRETRANSFER_TIME,
   VAR_STARTTRANSFER_TIME,
+  VAR_STARTUPLOAD_TIME,
+  VAR_FINISHUPLOAD_TIME,
+  VAR_STARTDOWNLOAD_TIME,
+  VAR_FINISHDOWNLOAD_TIME,
   VAR_SIZE_DOWNLOAD,
   VAR_SIZE_UPLOAD,
   VAR_SPEED_DOWNLOAD,
@@ -77,6 +81,10 @@ static const struct variable replacements[]={
   {"time_appconnect", VAR_APPCONNECT_TIME},
   {"time_pretransfer", VAR_PRETRANSFER_TIME},
   {"time_starttransfer", VAR_STARTTRANSFER_TIME},
+  {"time_startupload", VAR_STARTUPLOAD_TIME},
+  {"time_finishupload", VAR_FINISHUPLOAD_TIME},
+  {"time_startdownload", VAR_STARTDOWNLOAD_TIME},
+  {"time_finishdownload", VAR_FINISHDOWNLOAD_TIME},
   {"size_header", VAR_HEADER_SIZE},
   {"size_request", VAR_REQUEST_SIZE},
   {"size_download", VAR_SIZE_DOWNLOAD},
@@ -202,6 +210,26 @@ void ourWriteOut(CURL *curl, struct OutStruct *outs, const char *writeinfo)
                 if(CURLE_OK ==
                    curl_easy_getinfo(curl, CURLINFO_STARTTRANSFER_TIME,
                                      &doubleinfo))
+                  fprintf(stream, "%.3f", doubleinfo);
+                break;
+              case VAR_STARTUPLOAD_TIME:
+                if (CURLE_OK == curl_easy_getinfo(curl, CURLINFO_STARTUPLOAD_TIME,
+                                                  &doubleinfo))
+                  fprintf(stream, "%.3f", doubleinfo);
+                break;
+              case VAR_FINISHUPLOAD_TIME:
+                if (CURLE_OK == curl_easy_getinfo(curl, CURLINFO_FINISHUPLOAD_TIME,
+                                                  &doubleinfo))
+                  fprintf(stream, "%.3f", doubleinfo);
+                break;
+              case VAR_STARTDOWNLOAD_TIME:
+                if (CURLE_OK == curl_easy_getinfo(curl, CURLINFO_STARTDOWNLOAD_TIME,
+                                                  &doubleinfo))
+                  fprintf(stream, "%.3f", doubleinfo);
+                break;
+              case VAR_FINISHDOWNLOAD_TIME:
+                if (CURLE_OK == curl_easy_getinfo(curl, CURLINFO_FINISHDOWNLOAD_TIME,
+                                                  &doubleinfo))
                   fprintf(stream, "%.3f", doubleinfo);
                 break;
               case VAR_SIZE_UPLOAD:

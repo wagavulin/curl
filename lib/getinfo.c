@@ -49,6 +49,10 @@ CURLcode Curl_initinfo(struct SessionHandle *data)
   pro->t_appconnect = 0;
   pro->t_pretransfer = 0;
   pro->t_starttransfer = 0;
+  pro->t_startupload = 0;
+  pro->t_finishupload = 0;
+  pro->t_startdownload = 0;
+  pro->t_finishdownload = 0;
   pro->timespent = 0;
   pro->t_redirect = 0;
 
@@ -227,6 +231,18 @@ static CURLcode getinfo_double(struct SessionHandle *data, CURLINFO info,
     break;
   case CURLINFO_STARTTRANSFER_TIME:
     *param_doublep = data->progress.t_starttransfer;
+    break;
+  case CURLINFO_STARTUPLOAD_TIME:
+    *param_doublep = data->progress.t_startupload;
+    break;
+  case CURLINFO_FINISHUPLOAD_TIME:
+    *param_doublep = data->progress.t_finishupload;
+    break;
+  case CURLINFO_STARTDOWNLOAD_TIME:
+    *param_doublep = data->progress.t_startdownload;
+    break;
+  case CURLINFO_FINISHDOWNLOAD_TIME:
+    *param_doublep = data->progress.t_finishdownload;
     break;
   case CURLINFO_SIZE_UPLOAD:
     *param_doublep =  (double)data->progress.uploaded;
